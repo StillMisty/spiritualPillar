@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Scaling Example</title>
+</head>
+<body>
+
+    <img id="scaledImage" src="box.png">
+    <label for="imageInput" id="imageInputBox">点击传张图片<input type="file" accept="image/*"id="imageInput"></label>
+    <a id="downloadLink" download="box.png">点击下载</a>
+
+</body>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        height: 100vh;
+        width: 100vw;
+        background-color: #fefefe;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        #scaledImage {
+            width: 240px;
+            height: 240px;
+            border-radius: 10px;
+            box-shadow:  20px 20px 60px #bebebe,
+             -20px -20px 60px #ffffff;
+        }
+
+        #imageInputBox {
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            border-radius: 10px;
+            background: #e0e0e0;
+            box-shadow:  20px 20px 60px #bebebe,
+             -20px -20px 60px #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease-in-out;
+
+            &:hover {
+                background: #ffffff;
+            }
+
+            & input {
+                display: none;
+            }
+        }
+
+        #downloadLink {
+            border: 1px solid #e0e0e0;
+            border-style: none;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            background: #e0e0e0;
+            box-shadow:  20px 20px 60px #bebebe,
+             -20px -20px 60px #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+
+            &:hover {
+                background: #ffffff;
+            }
+        }
+    }
+
+
+
+</style>
+
+<script>
+    // 定义缩放后的宽度和高度
+    const newWidth = 240;
+    const newHeight = 240;
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const photo = new Image();
+
+    const imageInput = document.getElementById("imageInput");
+
+    imageInput.addEventListener("change", function(event) {
+        const selectedFile = event.target.files[0];
+        
+        if (selectedFile) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                photo.src = e.target.result;
+            };
+            reader.readAsDataURL(selectedFile);
+        }
+    });
+    
+    const box = new Image();
+    box.src = "box.png";
+
+    photo.onload = function() {
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+
+        ctx.drawImage(box, 0, 0, newWidth, newHeight);
+        let scaledBox = canvas.toDataURL("image/png");
+
+
+        ctx.rotate(- Math.PI / 7);
+        ctx.drawImage(photo, -42, 75, 130, 130);
+        let scaledPhoto = canvas.toDataURL("image/png");
+        document.getElementById("scaledImage").src = scaledPhoto;
+        
+    };
+
+
+    const downloadLink = document.getElementById("downloadLink");
+    downloadLink.addEventListener("click", function() {
+        downloadLink.href = canvas.toDataURL("image/png");
+    });
+</script>
+</html>
